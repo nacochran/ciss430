@@ -9,8 +9,6 @@
 #include <sys/stat.h>
 #include <cerrno>
 #include <cstring>
-#include <list>
-#include <unordered_map>
 #include <vector>
 #include <iomanip>
 #include <limits>
@@ -131,8 +129,6 @@ ssize_t writeFile(int fd, const char *data, off_t position, size_t numBytes) {
 // M2 memory units are blocks, or pages   //
 // ////////////////////////////////////// //
 
-// TODO: Use unordered_map (hash table) and doubly linked list (list)
-
 class BufferPoolManager {
 private:
     int NUM_FRAMES;
@@ -143,8 +139,7 @@ private:
     std::vector<bool> available;
     std::vector<int> block_index;
     std::vector<bool> dirty;
-		std::list<int> LRU;
-		std::unordered_map<int, std::list<int>::iterator> frameMap;
+		std::vector<int> LRU;
     int fd;
 
     // @method readBlock
@@ -189,10 +184,6 @@ private:
         dirty[frame_id] = false;
     }
 
-		int getLRUFrame() {
-        return LRU.back();
-    }
-
     // @method displayFrames
     // Displays frames of M1 memory
     // Used for main menu
@@ -224,6 +215,7 @@ public:
         available.resize(NUM_FRAMES, true);
         block_index.resize(NUM_FRAMES, -1);
         dirty.resize(NUM_FRAMES, false);
+			  LRU.resize(NUM_FRAMES);
 				// for (int i = 0; i < NUM_FRAMES; ++i) {
 				// 		LRU[i] = i;
 				// }
@@ -283,14 +275,23 @@ public:
             if (available[i]) {
                 frame_id = i;
 								updateLRU(frame_id);
+								// for (size_t i = 0; i < LRU.size(); i++) {
+								// 		std::cout << LRU[i] << " ";
+								// }
+								// std::cout << std::endl;
+								
                 break;
             }
         }
 
         if (frame_id == -1) {
-						frame_id = getLRUFrame();
+						frame_id = LRU.back();
             // utilize LRU as our page-replacement algorithm
             evictFrame(frame_id);
+						// for (size_t i = 0; i < LRU.size(); i++) {
+						// 		std::cout << LRU[i] << " ";
+						// }
+						// std::cout << std::endl;
 
 						std::cout << "Frame " << frame_id << " was LRU, so it will be replaced." << std::endl;
         }
@@ -299,32 +300,22 @@ public:
         available[frame_id] = false;
         block_index[frame_id] = page;
         dirty[frame_id] = false;
-				
         std::cout << "Page " << page << " loaded into frame " << frame_id << ".\n";
     }
 
-		void printLRU() {
-        std::cout << "LRU List: ";
-        for (int frame_id : LRU) {
-            std::cout << frame_id << " ";
-        }
-        std::cout << std::endl;
-    }
-
 		// @method updateLRU
-		// TODO: update
-	  void updateLRU(int frame_id) {
-				// remove frame_id from LRU (if it exists)
-        if (frameMap.find(frame_id) != frameMap.end()) {
-            LRU.erase(frameMap[frame_id]);
-        }
-
-				// push frame_id to beginning of LRU
-        LRU.push_front(frame_id);
-
-				// update map
-        frameMap[frame_id] = LRU.begin();
-    }
+		void updateLRU(int frame_id) {
+				auto it = std::find(LRU.begin(), LRU.end(), frame_id);
+				
+				if (it != LRU.end()) {
+						// Case (1): frame_id found, move it to front
+						std::rotate(LRU.begin(), it, it + 1);
+				} else {
+						// Case (2): frame_id not found, shift right and insert at front
+						std::rotate(LRU.rbegin(), LRU.rbegin() + 1, LRU.rend());
+						LRU[0] = frame_id;
+				}
+		}
 
     // @method writeFrame
     // Performs a [1] write frame operation, as provided
@@ -341,7 +332,10 @@ public:
 
         std::memcpy(frame[frame_id].data(), data.c_str(), PAGE_SIZE);
         dirty[frame_id] = true;
+				//std::cout << "Test: " << std::to_string(LRU[0]) << std::endl;
 				updateLRU(frame_id);
+				std::cout << "Test: " << std::to_string(LRU[0]) << std::endl;
+				//std::cout << "Test: " << std::to_string(LRU[0]) << std::endl;
 				
         std::cout << "Data written to frame " << frame_id << " and marked as dirty.\n";
     }
@@ -356,7 +350,6 @@ public:
                       << "[1] Write frame\n"
                       << "[2] Shutdown\n";
             displayFrames();
-						printLRU();
             std::cout << "Option: ";
             std::cin >> option;
 
