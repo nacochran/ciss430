@@ -1,0 +1,428 @@
+\input{myassignmentpreamble}
+\input{ciss430}
+\input{yliow}
+\renewcommand\TITLE{Assignment 1}
+
+\begin{document}
+\topmatter
+
+\textsc{Objectives}
+\begin{tightlist}
+  \item Write basic SQL statement to create a database.
+  \item Write basic SQL statement to create a table that includes
+  a primary key constraint.
+  \item Write basic SQL statement to create a table that includes
+  basic foreign key constraint.
+  \item Write basic SQL to insert rows into a table.
+  \item Write basic SQL statement to select and join two tables.
+  \item Write a simple simulation of a
+  very basic buffer pool management system to understand
+  the buffer pool management system for an RDBMS.
+\end{tightlist}
+
+\textsc{Submission}
+\begin{tightlist}
+  \item Create a directory a01.
+  \item For each question create a directory inside a01.
+  For Q1, create directory a01/a01q01,
+  for Q2, create directory a01/a01q02,
+  etc.
+  \item
+  All the work for Q1 must be placed in a01/a01q01,
+  all the work for Q2 must be placed in a01/a01q02,
+  Etc.
+  \item
+  For Q1-Q3, you need to write SQL statements, one file per question.
+  For Q4, you need to submit a C++ program.
+  I will run your program using
+  \begin{Verbatim}[frame=single]
+g++ *.cpp; ./a.out
+  \end{Verbatim}
+  You can have as many files as you like for Q4.
+  \item Archive and compress your a01:
+  \begin{Verbatim}[frame=single]
+tar -cvf a01.tar a01; gzip a01.tar
+  \end{Verbatim}
+  \item Email \verb!yliow.submit@gmail.com! your \verb!a01.tar.gz!
+  from your college email account.
+  The subject line of your email must be \verb!ciss430 a01!.
+  \item If you have any questions about submission, make sure you
+  talk to me or check with someone in class.
+\end{tightlist}
+
+\newpage
+
+
+Q1-Q3.
+[SQL]
+The following must be done with MySQL.
+You must avoid (as much as possible) features
+specific to MySQL, i.e., you should use standard SQL as much as possible.
+
+Dr. Liow needs a database for his classes.
+Here's what you need to know.
+
+An example of a class is \lq\lq CISS430A Spring 2017''.
+Note that Dr. Liow teaches several classes each semester.
+Also, note that each semester has a season (fall and spring) and a year.
+Furthermore, a semester (of course) must have a starting and an ending date.
+
+Note that the A in the above is called a section.
+The course number CISS430 is made up of CISS and 430.
+CISS is called the program
+and 430 is called the number.
+Besides that, each course has a name.
+For instance CISS430's name is Database Systems.
+
+There should also be a Person table with fname, lname, email, user, password.
+(The user and password is for logging into a web-based application.)
+There's also an Instructor table.
+The instructor table references the Person table.
+(The Person table include rows for instructors, students, etc.)
+
+Every table must start with an id column with data type INT
+which is a primary key for that table.
+
+Ensure that you have appropriate constraints, default values, etc.
+
+Enter the following data into the database:
+\begin{itemize}
+  \li Dr. Liow's information. His user name is \verb!yliow! and his
+  password is \verb!password!.
+  \li Dr. John Doe (of course a fictitious person).
+  His user name is \verb!jdoe! and his password is \verb!secret!.
+  \li Enter all the courses taught by Dr. Liow this semester.
+  \li Suppose that Dr. John Doe is teaching CISS170Z, CISS145W, CISS240B.
+  (All course information can be found at ccis.edu website.)
+\end{itemize}
+
+Write the following SQL query:
+\begin{itemize}
+  \li A report of all sections taught for the year 2017 (fall and spring).
+  The output should contain
+  semester (as in season and year)
+  instructor firstname, 
+  instructor lastname,
+  course (as in program and number)
+  sorted in the above order.
+\end{itemize}
+
+Note that correctness is not based on your SQL output but based on the
+correctness of your SQL select statement.
+
+
+The above SQL statements should be collected in the following way:
+\begin{itemize}
+  \item [Q1.] File: a01/a01q01/a01q01.sql. The SQL statement to create
+  the database.
+  \item [Q2.] File: a01/a01q02/a01q02.sql. The SQL statement to
+  insert the relevant data into the database.
+  \item [Q3.] File: a01/a01q03/a01q03.sql. The SQL statement to
+  generate the above report
+\end{itemize}
+
+\newpage
+
+Q4.
+
+The goal is to write a buffer pool management system.
+But for now, to understand this, we will write a very simple
+simulation.
+The real buffer pool management system will be implemented in a future
+assignment.
+
+Here are some general ideas.
+Say you have a file on the harddisk.
+The file is made up of blocks where each block is, say, made up of
+4096 bytes.
+(This means that each read/write from the harddisk to memory is by chunks of
+4096 bytes, i.e., by blocks.)
+
+Frequently, you do not need to read all the blocks of the file into memory.
+In fact if the file is huge, that would be impossible.
+
+Say you want to work with the second block of your file --
+maybe you want to do some reads and some writes.
+You can of course read and write to this block on the harddisk.
+But disk I/O is slow.
+(Google and read up on memory hierarchy or
+check your notes on CISS176 or CISS360 or CISS370.)
+A better way would be to fetch that block into memory and then
+do your reads and writes of this block in memory.
+When you are done, you copy the data of this block (in memory)
+to the block in you harddrive.
+
+The point is to speed up the reads and writes.
+
+A buffer pool management system brings blocks into memory for reads
+and writes and then when necessary, write the blocks in memory to the
+blocks on the harddisk
+
+When a block from the harddisk is fetched into memory, that 4096
+bytes in memory is usually called a frame.
+
+Another term:
+The term block really refers to a block of data for I/O.
+Usually I will say page instead of block.
+A page might be a block or it might be part of a block or ...
+We do not need to worry too much about this.
+You can view a page as a block if you like or you can
+think of it as a virtual block.
+
+For this exercise, you will assume that the block (or page) size is
+4 bytes (otherwise debugging would be a nightmare).
+Assume that you have a file with 5 blocks (or pages), i.e.,
+this file has 20 bytes.
+The name of this file is \verb!abc!.
+So go ahead and create the file
+\verb!abc! with the following contents (as characters):
+\begin{console}
+aaaabbbbccccddddeeee
+\end{console}
+(Just use a text editor.)
+
+We will assume that your buffer pool will only have at most 3 frames.
+
+The following is an execution of your program:
+{\small
+\begin{Verbatim}[frame=single,commandchars=\\\{\}]
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[][][]
+option: \underline{0}
+which page? \underline{1}
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][][]
+option: \underline{0}
+which page? \underline{3}
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][3:dddd][]
+option: \underline{0}
+which page? \underline{0}
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][3:dddd][0:aaaa]
+option: \underline{0}
+which page? \underline{3}
+page 3 is already fetched ... frame id is 1
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][3:dddd][0:aaaa]
+option: \underline{0}
+which page? \underline{1}
+page 1 is already fetched ... frame id is 0
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][3:dddd][0:aaaa]
+option: \underline{0}
+which page? \underline{0}
+page 0 is already fetched ... frame id is 2
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][3:dddd][0:aaaa]
+option: \underline{1}
+which page? \underline{3}
+enter 4 characters: \underline{p p p p}
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][*3:pppp][0:aaaa]
+option: \underline{1}
+which page? \underline{0}
+enter 4 characters: \underline{q q q q}
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][*3:pppp][*0:qqqq]
+option: \underline{0}
+which page? \underline{4}
+which frame to remove? \underline{1}
+frame 1 is dirty ... write to block 3
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[1:bbbb][4:eeee][*0:qqqq]
+option: \underline{0}
+which page? \underline{3}
+which frame to remove? \underline{0}
+frame 0 is not dirty ... no write
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[\textred{3:pppp}][4:eeee][*0:qqqq]
+option: \underline{1}
+which page? \underline{\textred{3}}
+enter 4 characters: \underline{r r r r}
+
+[0] Fetch a page into memory
+[1] Write frame
+[2] Shutdown
+Frames:[*\textred{3}:rrrr][4:eeee][*0:qqqq]
+option: \underline{2}
+frame 0 is dirty ... write to block \textred{3}
+frame 2 is dirty ... write to block 0
+halt
+\end{Verbatim}
+}
+
+MAKE SURE YOUR OUTPUT FOLLOWS THE ABOVE FORMAT.
+The grading is harsh.
+I might change the order of the operations or
+change the data written to the pages, but the
+format of the output must match the above trial run.
+
+When the above execution ends, the data in \verb!abc! is
+\begin{console}[commandchars=\\\{\}]
+qqqq\textred{bbbb}cccc\textred{rrrr}eeee
+\end{console}
+
+The \verb!*! in the
+display output of each frame indicates that the original data has been changed,
+i.e., the frame has not been synchronized with the corresponding block
+on the harddisk.
+
+Notes on POSIX file I/O is on the next page.
+
+I don't really care how your implement your buffer pool, i.e., I don't
+care how you implement your 3 frames and the way you remember the block
+number of each frame, and the \verb!*! that remembers a frame is dirty, i.e.,
+was modified.
+
+However you must use POSIX file I/O correctly.
+For instance your read and write should be done in a loop.
+Also, when you want to put the data from a page into a frame,
+you should only read a page.
+When you write a frame to the file, you should only write a frame.
+
+\textsc{Aside.}
+Once you're done with the above, you should see that when the
+number of frames is smaller than the number of pages,
+the buffer pool managlement system frequently needs to decide
+what frame to remove in order to make way for a new page.
+The frame to be removed is usually called the \textbf{victim}.
+The algorithm to decide the victim is called the
+\textbf{replacement algorithm}.
+These terms and most of the general ideas in this question
+applies to any form of cache system and not just a RDBMS buffer pool
+management system.
+
+
+\newpage
+\textsc{POSIX File I/O}
+
+Includes:
+\begin{console}[commandchars=\\\{\}]
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <cerrno>
+\textred{#include <cstring>}
+\end{console}
+  
+To open a file for read and write:
+\begin{console}
+int fd = open(filename, O_RDWR);
+if (fd < 0)
+{
+    std::cout << "open fail\n";
+    std::cout << "errno: " << errno << std::endl;
+    std::cout << "strerror: " << strerror(errno) << std::endl;
+}
+else
+{
+    std::cout << "open ok" << std::endl;
+}
+\end{console}
+If you want to open it for read and write, and create it if the file
+does not exists, you want to create it:
+\begin{console}
+int fd = open(filename, O_RDWR | O_CREAT, 0644);
+\end{console}
+(fd = file descriptor).
+
+To read a file
+\begin{console}
+int size = 100;
+unsigned char buff[1024];
+int result_size;
+
+result_size = read(fd, buff, size);
+\end{console}
+Read 100 bytes into \verb!buff!.
+Note that \verb!result_size! might be less than 100.
+If so, you have to keep doing it until you get all the bytes.
+If you hit an EOF, \verb!read! will return 0.
+
+
+To write to the file:
+\begin{console}
+int size = 100;
+unsigned char buff[1024];
+int result_size;
+
+result_size = write(fd, buff, size);
+\end{console}
+Write 100 bytes \verb!buff! into file.
+Note that \verb!result_size! might be less than 100.
+If so, you have to keep doing it until you have written all the bytes.
+
+
+To move the file's read/write pointer with respect to current position:
+\begin{console}
+lseek(fd, 100, SEEK_CUR);
+\end{console}
+In this case, move the pointer by 100 forward.
+Of course you can move backwards:
+\begin{console}
+lseek(fd, -40, SEEK_CUR);
+\end{console}
+-1 is returned if there's an error.
+To move the file's read/write pointer with respect to beginning-of-file
+position:
+\begin{console}
+lseek(fd, 200, SEEK_SET);
+\end{console}
+lseek returns the pointer position after the move; the type is an int
+although officially POSIX uses \verb!off_t!.
+Because of this, using lseek, you can find the current pointer position
+by not moving from the current position:
+\begin{console}
+off_t pos;
+pos = lseek(fd, 0, SEEK_CUR);
+\end{console}
+
+To close the file:
+\begin{console}
+close(fd);
+\end{console}
+If there's an error, you can fetch the error message like the above.
+
+You can easily find out more about POSIX file I/O on the web.
+
+As an exercise before doing the assignment question,
+you should create a simple text file, and using POSIX,
+open the file, move the file position forward, read a few characters,
+move the file position backward, read a few characters,
+move forward, write a few characters to the file, and close the file.
+
+\end{document}

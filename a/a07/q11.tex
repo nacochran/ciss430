@@ -1,0 +1,9 @@
+
+
+\rho(JH, \sigma_{\sname = \texttt{'Jabba the Hutt'}}(\Suppliers)})
+  
+\rho(CatalogJH, \Catalog \Join_{\Catalog.\sid = \pi_{\sid}(JH)} JH)
+
+\pi_{\pid} (
+  CatalogJH - \pi_{C1.\pid}(\sigma_{C1.\pid \neq C2.\pid \land C1.\clost < C2.\cost} (\rho(C1, CatalogJH)) \times (\rho(C2, CatalogJH)))
+)

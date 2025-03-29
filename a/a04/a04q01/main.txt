@@ -1,0 +1,100 @@
++----------------+--------------+------+-----+---------+----------------+
+| Field          | Type         | Null | Key | Default | Extra          |
++----------------+--------------+------+-----+---------+----------------+
+| id             | int          | NO   | PRI | NULL    | auto_increment |
+| principal_id   | int          | YES  | MUL | NULL    |                |
+| character_name | varchar(200) | YES  |     | NULL    |                |
++----------------+--------------+------+-----+---------+----------------+
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| id     | int         | NO   | PRI | NULL    | auto_increment |
+| tconst | varchar(50) | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | int          | NO   | PRI | NULL    | auto_increment |
+| crew_id       | int          | YES  | MUL | NULL    |                |
+| director_name | varchar(400) | YES  |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int         | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(50) | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| id     | int         | NO   | PRI | NULL    | auto_increment |
+| nconst | varchar(50) | YES  | MUL | NULL    |                |
+| tconst | varchar(50) | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| nconst        | varchar(50)  | NO   | PRI | NULL    |       |
+| first_name    | varchar(200) | YES  |     | NULL    |       |
+| last_name     | varchar(200) | YES  |     | NULL    |       |
+| year_of_birth | int          | YES  |     | NULL    |       |
+| year_of_death | int          | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
++---------------+-------------+------+-----+---------+----------------+
+| Field         | Type        | Null | Key | Default | Extra          |
++---------------+-------------+------+-----+---------+----------------+
+| id            | int         | NO   | PRI | NULL    | auto_increment |
+| nconst        | varchar(50) | YES  | MUL | NULL    |                |
+| profession_id | int         | YES  | MUL | NULL    |                |
++---------------+-------------+------+-----+---------+----------------+
++----------------+--------------+------+-----+---------+----------------+
+| Field          | Type         | Null | Key | Default | Extra          |
++----------------+--------------+------+-----+---------+----------------+
+| id             | int          | NO   | PRI | NULL    | auto_increment |
+| tconst         | varchar(50)  | YES  |     | NULL    |                |
+| ordering       | int          | YES  |     | NULL    |                |
+| nconst         | varchar(50)  | YES  |     | NULL    |                |
+| category       | varchar(400) | YES  |     | NULL    |                |
+| job            | varchar(400) | YES  |     | NULL    |                |
+| character_name | varchar(600) | YES  |     | NULL    |                |
++----------------+--------------+------+-----+---------+----------------+
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| id       | int          | NO   | PRI | NULL    | auto_increment |
+| job_desc | varchar(200) | YES  |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
++----------------+-------------+------+-----+---------+----------------+
+| Field          | Type        | Null | Key | Default | Extra          |
++----------------+-------------+------+-----+---------+----------------+
+| id             | int         | NO   | PRI | NULL    | auto_increment |
+| tconst         | varchar(50) | YES  | MUL | NULL    |                |
+| average_rating | int         | YES  |     | NULL    |                |
+| num_votes      | int         | YES  |     | NULL    |                |
++----------------+-------------+------+-----+---------+----------------+
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| tconst          | varchar(50)  | NO   | PRI | NULL    |       |
+| title_type      | varchar(100) | YES  |     | NULL    |       |
+| primary_title   | varchar(600) | YES  |     | NULL    |       |
+| original_title  | varchar(600) | YES  |     | NULL    |       |
+| is_adult        | bit(1)       | YES  |     | NULL    |       |
+| start_year      | int          | YES  |     | NULL    |       |
+| end_year        | int          | YES  |     | NULL    |       |
+| runtime_minutes | int          | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
++----------+-------------+------+-----+---------+----------------+
+| Field    | Type        | Null | Key | Default | Extra          |
++----------+-------------+------+-----+---------+----------------+
+| id       | int         | NO   | PRI | NULL    | auto_increment |
+| tconst   | varchar(50) | YES  | MUL | NULL    |                |
+| genre_id | int         | YES  | MUL | NULL    |                |
++----------+-------------+------+-----+---------+----------------+
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int          | NO   | PRI | NULL    | auto_increment |
+| crew_id     | int          | YES  | MUL | NULL    |                |
+| writer_name | varchar(400) | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+

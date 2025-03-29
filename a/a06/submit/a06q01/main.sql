@@ -1,0 +1,15 @@
+-- main.sql in a06/a06q01/
+
+DROP DATABASE IF EXISTS a06;
+CREATE DATABASE a06;
+USE a06;
+
+DROP TABLE IF EXISTS input;
+CREATE TABLE input(n int);
+INSERT INTO input (n) VALUES (3);
+
+WITH RECURSIVE T(i, j, n) AS (
+		 SELECT 1,2,(SELECT n FROM input WHERE n = 3)
+		 UNION ALL
+		 SELECT i+1,j+1,n FROM T WHERE i < n
+) SELECT SUM(i*j) AS sum FROM T;

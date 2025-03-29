@@ -1,0 +1,298 @@
+\input{thispreamble.tex}
+
+\input{preamble-instructions.tex}
+
+\begin{center}
+  \textsc{Honor Statement}
+\end{center}
+I, \answerbox{[Nathan Cochran]},
+attest to the fact that the submitted work is my own and
+is not the result of plagiarism.
+Furthermore, I have not aided another student in the act of
+plagiarism.
+
+\input{preamble.tex}
+
+\newpage
+Q1. \input{q1.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT eid FROM Certified WHERE
+aid = (SELECT aid FROM Aircraft WHERE aname = 'Flight Crew Shuttle');
+\end{answercode}
+
+
+
+
+Q2. \input{q2.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT ename FROM Employee WHERE
+eid = (SELECT eid FROM Certified WHERE
+    aid = (SELECT aid FROM Aircraft WHERE
+           aname = 'Flight Crew Shuttle')
+       AND Certified.eid = Employee.eid);
+\end{answercode}
+
+
+\newpage
+Q3. \input{q3.tex}
+
+\textsc{Answer}
+\begin{answercode}
+Note: Beggar's Canyon is written as Beggars Canyon
+
+SELECT aid FROM Aircraft WHERE
+cruisingrange >= (SELECT distance FROM Flights WHERE
+from_ = 'Beggars Canyon' AND to_ = 'Dune Sea Exchange');
+\end{answercode}
+
+
+Q4. \input{q4.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT aid FROM Aircraft WHERE
+(SELECT COUNT(Certified.aid) FROM Certified WHERE
+Certified.aid = Aircraft.aid AND eid =
+(SELECT eid FROM Employee WHERE Certified.eid = Employee.eid
+AND salary > 100)) = (SELECT COUNT(eid) FROM Employee
+WHERE salary > 100);
+\end{answercode}
+
+
+\newpage
+
+Q5. \input{q5.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT ename FROM Employee WHERE (SELECT COUNT(eid) FROM Certified WHERE
+aid = (SELECT aid FROM Aircraft WHERE Aircraft.aid = Certified.aid
+AND cruisingrange > 2000) > 0 AND Certified.eid = Employee.eid)
+AND
+(SELECT COUNT(aid) FROM Certified WHERE
+Certified.eid = Employee.eid AND
+Certified.aid = (SELECT aid FROM Aircraft WHERE
+aname = 'Flight Crew Shuttle')) < 1;
+\end{answercode}
+
+
+Q6. \input{q6.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT eid FROM Employee WHERE salary = (SELECT Max(salary)
+FROM Employee);
+\end{answercode}
+
+
+\newpage
+
+Q7. \input{q7.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT eid FROM Employee WHERE salary = (SELECT Max(salary)
+FROM Employee WHERE salary < (SELECT Max(salary) from Employee));
+\end{answercode}
+
+
+
+
+Q8. \input{q8.tex}
+
+\textsc{Answer}
+\begin{answercode}
+ERROR
+I believe this question is impossible to answer because answering this
+would require generating a temporary table of the # of certifications
+each employee has, which requires a loop. Unfortunately, there is no
+concept of a loop in SQL, so which would require programmatic access
+to loop over Employee, generate a temporary table of maxes, and then
+perform the following SQL query, where maxtable is a temporary table.
+
+SELECT eid FROM Employee WHERE (SELECT COUNT(aid) FROM Certified
+WHERE Employee.eid = Certified.eid) = (SELECT MAX(max) FROM maxtable);
+\end{answercode}
+
+
+\newpage
+Q9. \input{q9.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT eid FROM Employee WHERE (SELECT COUNT(aid) FROM
+Certified WHERE Employee.eid = Certified.eid) = 3;
+\end{answercode}
+
+
+
+
+Q10. \input{q10.tex}
+
+\textsc{Answer}
+\begin{answercode}
+SELECT SUM(salary) FROM Employee;
+\end{answercode}
+
+
+\newpage
+Q11. \input{q11.tex}
+
+\textsc{Answer}
+\begin{answercode}
+Note: This problem is likely impossible, depending on the complexity
+of the map layout. However, if we assume that every location can
+have one and only one connection from it, then the following
+recursive query will determine if any path exists. If not, it return
+an empty query. If it does, it will return the # of steps required
+to get to the destination.
+
+Note: I use to_ and from_ instead of to and from for the Flights
+table schema.
+
+WITH RECURSIVE T(f, t, step, path_found)
+AS (
+	 SELECT ('Raider Camp'), (SELECT to_ FROM Flights WHERE
+          from_ = 'Raider Camp'), 1, 'FALSE'
+	 UNION ALL
+	 SELECT t,
+   (SELECT to_ FROM Flights WHERE from_ = t),
+   step+1,
+   (CASE WHEN ((SELECT to_ FROM Flights WHERE
+   from_ = t) = 'Rebel Depot') THEN 'TRUE' ELSE 'FALSE' END)
+   FROM T WHERE step < 10 AND (SELECT COUNT(to_)
+   FROM Flights WHERE from_ = t) > 0
+) SELECT step AS steps_to_take from T WHERE path_found = 'TRUE';
+\end{answercode}
+
+
+
+
+\newpage
+\input{supportticket.tex}
+
+
+\newpage
+\input{q12.tex}
+
+\textsc{Answer}
+\begin{answercode}
+CREATE TABLE SupportTickets (
+			 sid INT AUTO_INCREMENT PRIMARY KEY,
+			 email VARCHAR(200),
+			 subject VARCHAR(200)
+);
+
+CREATE TABLE Employees (
+			 eid INT PRIMARY KEY,
+			 name VARCHAR(200)
+);
+
+CREATE TABLE Notes (
+			 nid INT AUTO_INCREMENT PRIMARY KEY,
+			 sid INT,
+			 eid INT,
+			 state INT,
+			 note VARCHAR(200),
+			 time INT
+);
+\end{answercode}
+
+
+
+
+\newpage
+\input{q13.tex}
+
+\textsc{Answer}
+\begin{answercode}
+INSERT INTO SupportTickets (email, subject) VALUES
+('test_email@gmail.com', 'Question #1'),
+('test2_email@gmail.com', 'Question #2'),
+('test3_email@gmail.com', 'Question #3');
+
+INSERT INTO Employees (eid, name) VALUES
+(3, 'John Doe'),
+(97, 'Blake Deere');
+
+
+INSERT INTO Notes (sid, eid, state, note, time) VALUES
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'John Doe'),
+  0,
+  'Hey I have a problem X!',
+  5
+),
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'John Doe'),
+  0,
+  'Hurry Up!!!',
+  6
+),
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'Blake Deere'),
+  9,
+  'Here is the solution for X!',
+  10
+),
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'John Doe'),
+  0,
+  'That did not completely fix problem X!',
+  24
+),
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'Blake Deere'),
+  9,
+  'Try this other thing to fix X!',
+  30
+),
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'John Doe'),
+  0,
+  'That still does not fix it!',
+  45
+),
+(
+  (SELECT sid FROM SupportTickets WHERE subject = 'Question #1'),
+  (SELECT eid FROM Employees WHERE name = 'Blake Deere'),
+  9,
+  'Our apologies, try this last final solution!',
+  68
+);
+\end{answercode}
+
+
+\newpage
+Q12. \input{q14.tex}
+
+\textsc{Answer}
+\begin{answercode}
+CREATE TEMPORARY TABLE T1 AS
+SELECT N1.sid, N1.note AS N1_note, N1.time AS N1_time, N2.note AS
+N2_note, N2.time AS N2_time, N2.time - N1.time AS wait
+FROM Notes AS N1
+JOIN
+Notes AS N2
+ON N1.sid = N2.sid
+WHERE N1.state = 0
+AND N2.state = 9
+AND N2.time > N1.time
+AND N2.time = (SELECT MIN(N3.time) FROM Notes AS
+N3 WHERE N3.time > N1.time AND N3.state = 9);
+
+SELECT * FROM T1;
+SELECT SUM(wait) FROM T1;
+\end{answercode}
+
+\end{document}

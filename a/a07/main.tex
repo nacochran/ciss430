@@ -1,0 +1,200 @@
+\input{myassignmentpreamble}
+\input{ciss430}
+\input{yliow}
+\renewcommand\TITLE{Assignment 6}
+
+\begin{document}
+\topmatter
+
+\textsc{Objectives}
+\begin{enumerate}
+\item Write queries using relational algebra operators.
+\end{enumerate}
+
+\newcommand\stringtype{\texttt{string}}
+\newcommand\integertype{\texttt{integer}}
+\newcommand\realtype{\texttt{real}}
+
+\newcommand\Suppliers{\texttt{Suppliers}}
+\newcommand\Parts{\texttt{Parts}}
+\newcommand\Catalog{\texttt{Catalog}}
+\newcommand\sid{\texttt{sid}}
+\newcommand\sname{\texttt{sname}}
+\newcommand\pid{\texttt{pid}}
+\newcommand\pname{\texttt{pname}}
+\newcommand\mycolor{\texttt{color}}
+\newcommand\cost{\texttt{cost}}
+\newcommand\address{\texttt{address}}
+
+Enter your answers in \verb!q1.tex!, \verb!q2.tex!, etc.
+
+Hans Solo need to get some parts to fix the Millenium Falcon.
+Unfortunately the website is down.
+You'll have to help him enter the queries using relational algebra.
+
+Here's the schemas of the database at the rebel base:
+
+\begin{console}[commandchars=\\\{\},frame=none,fontsize=\normalsize]
+    \Suppliers(\sid: \integertype, \sname: \stringtype, \address: \stringtype)
+    \Parts(\pid: \integertype, \pname: \stringtype, \mycolor: \stringtype)
+    \Catalog(\sid: \integertype, \pid: \integertype, \cost: \realtype)
+\end{console}
+
+(Note: There are \LaTeX\ macros for the
+relations and the column names.
+See \verb!main.tex!.
+For instance \verb!\Suppliers! gives you \Suppliers.
+
+Set operations:
+\[
+ \cup  \hspace{1cm}
+ \cap  \hspace{1cm}
+ - 
+\]
+Relational algebra operators:
+\[
+\sigma \hspace{1cm}
+\pi    \hspace{1cm}
+\rho
+\]
+Comparison:
+\[
+=     \hspace{1cm}
+\neq  \hspace{1cm}
+<     \hspace{1cm}
+\leq  \hspace{1cm}
+>     \hspace{1cm}
+\geq
+\]
+
+Logical operators:
+\[
+\lnot   \hspace{1cm}   \land   \hspace{1cm}   \lor
+\]
+
+Cross product and join:
+\[
+\times   \hspace{1cm}
+\Join_{a = b}
+\]
+
+Example:
+\[
+\sigma_{\sid = 42}(\Suppliers)
+\]
+\[
+\sigma_{\sid \neq 42}(\Suppliers)
+\]
+\[
+\sigma_{\lnot (\sid < 42)}(\Suppliers)
+\]
+\[
+\sigma_{\sid \leq 42 \land \sname = \texttt{'Bar'} }(\Suppliers)
+\]
+\[
+\rho(T(\sid \rightarrow a), \Suppliers)
+\]
+
+%------------------------------------------------------------------------------
+\newpage
+Q1.
+Find the names of suppliers who supply some red part.
+
+\SOLUTION
+\input{q1.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q2.
+Find the sids of suppliers who supply some red or green part.
+
+\SOLUTION
+\input{q2.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q3.
+Find the sids of suppliers who supply some red part or are at 221 Baker Street.
+
+\SOLUTION
+\input{q3.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q4.
+Find the sids of suppliers who supply some red part and some green part.
+
+\SOLUTION
+\input{q4.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q5.
+Find the sids of suppliers who supply every part.
+
+\SOLUTION
+\input{q5.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q6.
+Find the sids of suppliers who supply every red part.
+
+\SOLUTION
+\input{q6.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q7.
+Find the sids of suppliers who supply every red or green part.
+
+\SOLUTION
+\input{q7.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q8.
+Find the sids of suppliers who supply every red part or supply every green part.
+
+\SOLUTION
+\input{q8.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q9.
+Find pairs of sids such that the supplier with the first
+sid charges more for some part than the supplier with the second sid.
+
+\SOLUTION
+\input{q9.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q10.
+Find the pids of parts supplied by at least two different suppliers.
+
+\SOLUTION
+\input{q10.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q11.
+Find the pids of the most expensive parts supplied by suppliers
+names Jabba the Hutt.
+
+\SOLUTION
+\input{q11.tex}
+
+%------------------------------------------------------------------------------
+\newpage
+Q12.
+Find the pids of parts supplied by every supplier at less than \$200.
+(If any supplier either does not supply the part
+or
+charges more than \$200 for it, the part is not selected.)
+
+\SOLUTION
+\input{q12.tex}
+
+%------------------------------------------------------------------------------
+\end{document}

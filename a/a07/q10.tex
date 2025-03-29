@@ -1,0 +1,6 @@
+
+\rho(R1(\sid \rightarrow sid1, \pid \rightarrow pid1), \pi_{sid,pid}(\Suppliers \Join \Catalog))
+
+\rho(R2(\sid \rightarrow sid2, \pid \rightarrow pid2), \pi_{sid,pid}(\Suppliers \Join \Catalog))
+
+\pi_{pid1}(\sigma_{pid1 = pid2 \land sid1 \neq sid2 }(R1 \times R2))

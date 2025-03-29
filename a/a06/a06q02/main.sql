@@ -1,0 +1,17 @@
+-- main.sql in a06/a06q02/
+
+DROP DATABASE IF EXISTS a06;
+CREATE DATABASE a06;
+USE a06;
+
+DROP TABLE IF EXISTS input;
+CREATE TABLE input(a INT, b INT);
+INSERT INTO input (a, b) VALUES (6,15);
+
+SELECT * FROM input;
+
+WITH RECURSIVE T(a, b) AS (
+		 SELECT a,b FROM input
+		 UNION ALL
+		 SELECT b,(a%b) FROM T WHERE b <> 0 
+) SELECT a AS GCD FROM T WHERE b = 0;
